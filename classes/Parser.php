@@ -14,7 +14,7 @@ class Parser
     {
         $options = new Options();
         $reader = new Reader($options->get(PARAM_DELIMITER));
-        $writer = new Writer();
+        $writer = new Writer($options->get(PARAM_SOURCE_FILE));
         $transformer = new Transformer();
 
         if ($options->has(PARAM_HELP)) {
@@ -42,8 +42,6 @@ class Parser
             echo "offset $offset \r\n";
         }
 
-        $xml_data = [];
-
         while ($data = $reader->get()) {
             $step++;
 
@@ -51,9 +49,13 @@ class Parser
                 continue;
             }
 
-            $xml_data[] = $transformer->make($data);
+            $data = $transformer->make($data);
+
+            $writer->setData($data);
         }
 
-        return 'run ' . json_encode($xml_data);
+        $writer->save();
+
+        return "complete \r\n" ;
     }
 }

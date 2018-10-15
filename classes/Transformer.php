@@ -16,6 +16,8 @@ class Transformer
     {
         if ($cost_index) {
             $this->cost_index = $cost_index;
+        } else {
+            $this->cost_index = self::DEFAULT_COURSE;
         }
     }
 
@@ -24,7 +26,7 @@ class Transformer
         $row = [];
         foreach ($data as $index => $val) {
             if (is_numeric($val)) {
-                $row['price'] = $val;
+                $row['price'] = $val * $this->cost_index;
             } else {
                 $row['code'] = $this->prepareCode($val);
             }
